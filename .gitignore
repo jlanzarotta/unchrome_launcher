@@ -1,12 +1,24 @@
 # If you prefer the allow list template instead of the deny list, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
+
+# Github token.
+github_token
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
+
+# Chromium related stuff
+bin/
+profile/
+download/
+
+# VSCodium related stuff
+.vscode
 
 # Test binary, built with `go test -c`
 *.test
