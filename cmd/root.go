@@ -113,6 +113,7 @@ func initConfig() {
 
 	// Set various defaults.
 	viper.SetDefault(constants.DEBUG, false)
+	viper.SetDefault(constants.PAUSE_AFTER_UPDATE, false)
 	viper.SetDefault(constants.BIN_DIRECTORY, filepath.Join(".", "bin"))
 	viper.SetDefault(constants.DOWNLOAD_DIRECTORY, filepath.Join(".", "download"))
 	viper.SetDefault(constants.PROFILE_DIRECTORY, filepath.Join(".", "profile"))
@@ -158,7 +159,8 @@ func initConfig() {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// No config file, just use defaults.
 			viper.SafeWriteConfig()
-			log.Printf("%s: Unable to load config file, using/writing default values to [%s].\n\n",
+			viper.ReadInConfig()
+			log.Printf("%s: Unable to load config file, writing default values to [%s].\n\n",
 				color.HiBlueString(constants.INFO_NORMAL_CASE), viper.ConfigFileUsed())
 		} else {
 			log.Fatalf("%s: Error reading config file: %s\n",

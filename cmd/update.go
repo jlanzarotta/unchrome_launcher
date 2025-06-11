@@ -32,6 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package cmd
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -106,7 +107,8 @@ func (pw *progressWriter) Write(p []byte) (int, error) {
 func getResponse(url string) (*http.Response, error) {
 	resp, err := http.Get(url) // nolint:gosec
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("%s: %s\n",
+			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
 	}
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("receiving status of %d for url: %s", resp.StatusCode, url)
@@ -140,9 +142,9 @@ func update(_ *cobra.Command, _ []string) {
 		return
 	}
 
-	fmt.Println("Latest Release:", release.TagName)
-	viper.Set(constants.INSTALLED_VERSION, release.TagName)
-	viper.WriteConfig()
+	log.Println("AUTOUPDATING to latest release version...")
+	log.Println("      Installed Version:", installedVersion)
+	log.Println("Latest Released Version:", release.TagName)
 
 	// Step 2: Find the desired asset
 	var downloadURL string
@@ -179,9 +181,11 @@ func update(_ *cobra.Command, _ []string) {
 
 	//fmt.Println("Download complete!")
 
+	// Step 3: Download the asset
 	resp, err = getResponse(*&downloadURL)
 	if err != nil {
-		fmt.Println("could not get response", err)
+		log.Fatalf("%s: could not get response: %s\n",
+			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
 		os.Exit(1)
 	}
 	defer resp.Body.Close() // nolint:errcheck
@@ -189,14 +193,16 @@ func update(_ *cobra.Command, _ []string) {
 	// Don't add TUI if the header doesn't include content size
 	// it's impossible see progress without total
 	if resp.ContentLength <= 0 {
-		fmt.Println("can't parse content length, aborting download")
+		log.Fatalf("%s: could not parse content length, aborting download.\n",
+			color.RedString(constants.FATAL_NORMAL_CASE))
 		os.Exit(1)
 	}
 
 	filename := filepath.Base(*&downloadURL)
 	file, err := os.Create(filepath.Join(viper.GetString(constants.DOWNLOAD_DIRECTORY), filename))
 	if err != nil {
-		fmt.Println("could not create file:", err)
+		log.Fatalf("%s: could not create file: %s.\n",
+			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
 		os.Exit(1)
 	}
 	defer file.Close() // nolint:errcheck
@@ -222,11 +228,12 @@ func update(_ *cobra.Command, _ []string) {
 	go pw.Start()
 
 	if _, err := p.Run(); err != nil {
-		fmt.Println("error running program:", err)
+		log.Fatalf("%s: error running program: %s.\n",
+			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
 		os.Exit(1)
 	}
 
-	// Unzip the contents of the downloaded file to the BIN_DIRECTORY.
+	// Step 4: Unzip the contents of the downloaded file to the BIN_DIRECTORY.
 	err = unzip(file.Name(), viper.GetString(constants.BIN_DIRECTORY))
 	if err != nil {
 		log.Fatalf("%s: %s\n",
@@ -234,5 +241,14 @@ func update(_ *cobra.Command, _ []string) {
 		os.Exit(1)
 	}
 
+	// Step 5: Write the new version to the configuration file.
+	viper.Set(constants.INSTALLED_VERSION, release.TagName)
+	viper.WriteConfig()
+
 	log.Printf("Done.\n");
+
+	if viper.GetBool(constants.PAUSE_AFTER_UPDATE) {
+		log.Print("Press 'Enter' to continue...")
+  		bufio.NewReader(os.Stdin).ReadBytes('\n')
+	}
 }

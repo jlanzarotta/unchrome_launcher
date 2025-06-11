@@ -79,18 +79,24 @@ func run(_ *cobra.Command, _ []string) {
 	}
 
 	if isRunningWindows(constants.CHROME_APPLICATION_NAME) {
-		log.Printf("Already running... bringing to foreground")
+		if viper.GetBool(constants.DEBUG) {
+			log.Printf("Already running... bringing to foreground")
+		}
 		findAndFocusWindowBySubstring("Chromium")
 	} else {
-		log.Printf("Not running... Starting.")
 		// Start the command (non-blocking).
+		if viper.GetBool(constants.DEBUG) {
+			log.Printf("Not running... Starting.")
+		}
 		cmd := exec.Command(path, args...)
 		err = cmd.Start()
 		if err != nil {
 			log.Fatalf("%s: [%s\n",
 				color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
 		} else {
-			log.Printf("Started process (PID: %d)\n", cmd.Process.Pid)
+			if viper.GetBool(constants.DEBUG) {
+				log.Printf("Started process (PID: %d)\n", cmd.Process.Pid)
+			}
 		}
 	}
 }
