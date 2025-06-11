@@ -142,7 +142,7 @@ func findAndFocusWindowBySubstring(substring string) bool {
 			}
 
             // Bring to foreground.
-            procShowWindow.Call(hwnd, SW_SHOW)
+            procShowWindow.Call(hwnd, SW_SHOWNA)
             procSetForegroundWindow.Call(hwnd)
 
             found = true

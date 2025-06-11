@@ -49,6 +49,7 @@ func Execute(defaultCommand string) {
 }
 
 func init() {
+	cobra.MousetrapHelpText = constants.EMPTY
 	cobra.OnInitialize(initConfig)
 
 	cobra.AddTemplateFunc("StyleHeading", color.New(color.FgGreen).SprintFunc())
