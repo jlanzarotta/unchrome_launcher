@@ -100,11 +100,11 @@ release:
   footer: |
     **Full Changelog**: https://github.com/jlanzarotta/khronos/compare/{{ .PreviousTag }}...{{ .Tag }}
 
-#scoops:
-#  - repository:
-#      owner: jlanzarotta
-#      name: scoop-ungoogled_launcher
-#    directory: bucket
-#    homepage: "https://github.com/jlanzarotta/ungoogled_launcher"
-#    description: "A Chromium launcher/updater written in Go."
-#    license: BSD-3-Clause
+scoops:
+  - repository:
+      owner: jlanzarotta
+      name: scoop-ungoogled_launcher
+    directory: bucket
+    homepage: "https://github.com/jlanzarotta/ungoogled_launcher"
+    description: "A Chromium launcher/updater written in Go."
+    license: BSD-3-Clause

@@ -17,6 +17,9 @@ bin/
 profile/
 download/
 
+# goreleaser related stuff
+dist/
+
 # VSCodium related stuff
 .vscode
 
