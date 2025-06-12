@@ -54,6 +54,8 @@ archives:
     files:
       - LICENSE
       - README.html
+      - SetDefaultBrowser.bat
+      - RegistryCleaner.reg
 
 checksum:
   name_template: 'checksums.txt'
