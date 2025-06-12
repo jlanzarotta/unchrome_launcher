@@ -74,6 +74,14 @@ pause_after_update: false <6>
 <5> The version number of the installed version of Ungoogled Chromium.
 <6> If Ungoogled Launcher should pause after a version has been updated.
 
+=== Default Browser
+
+Ungoogled Launcher has feature to use portable Chromium as default browser and
+it will be open links from another programs through Ungoogled Launcher.
+
+- start "SetDefaultBrowser.bat" (as admin).
+- start "Control panel" -> "Default programs" -> "Set your default programs" -> "Ungoogled Launcher" and set all checkboxes on.
+
 == Copyright and License
 
 BSD 3-Clause License
