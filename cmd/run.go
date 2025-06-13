@@ -97,7 +97,8 @@ func run(_ *cobra.Command, args []string) {
 	var profileDirectory string = filepath.Join(workingDirectory, viper.GetString(constants.PROFILE_DIRECTORY))
 	var finalArguments []string = strings.Split(viper.GetString(constants.CHROME_COMMAND_LINE_OPTIONS), constants.SPACE)
 	finalArguments = append(finalArguments, "--user-data-dir="+profileDirectory)
-	finalArguments = append(finalArguments, args...)
+	var newArgs = processArgs(args)
+	finalArguments = append(finalArguments, newArgs...)
 
 	runChrome(path, finalArguments)
 	findAndFocusWindowBySubstring("Chromium")
@@ -115,6 +116,29 @@ func runChrome(path string, arguments []string) {
 		}
 	}
 }
+
+func processArgs(args []string) []string {
+	var newArgs []string
+
+	for _, arg := range args {
+		if strings.HasPrefix(strings.ToLower(arg), strings.ToLower("http")) {
+			newArgs = append(newArgs, arg)
+		} else {
+			absPath, err := filepath.Abs(arg)
+			if err != nil {
+				log.Fatalf("%s: Error getting absolute path [%v]\n",
+					color.RedString(constants.FATAL_NORMAL_CASE), err)
+			} else {
+				dir := filepath.Dir(absPath)
+				fileName := filepath.Base(absPath)
+				newArgs = append(newArgs, filepath.Join(dir, fileName))
+			}
+		}
+	}
+
+	return newArgs
+}
+
 
 func findAndFocusWindowBySubstring(substring string) bool {
 	found := false
