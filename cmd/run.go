@@ -85,16 +85,23 @@ func init() {
 func run(_ *cobra.Command, args []string) {
 	// Then we run.
 	// Command and its arguments
-	workingDirectory, err := os.Getwd()
-	if err != nil {
+
+	// Find the directory where the Ungoogled Launcher executable is located.
+    exePath, err := os.Executable()
+    if err != nil {
 		log.Fatalf("%s: [%v]\n",
 			color.RedString(constants.FATAL_NORMAL_CASE), err)
 		os.Exit(1)
+    }
+    exeDir := filepath.Dir(exePath)
+
+	if viper.GetBool(constants.DEBUG) {
+    	log.Println("Executable directory:", exeDir)
 	}
 
-	var path string = filepath.Join(workingDirectory, viper.GetString(constants.BIN_DIRECTORY), "chrome.exe")
+	var path string = filepath.Join(exeDir, viper.GetString(constants.BIN_DIRECTORY), "chrome.exe")
 	path = filepath.Clean(path)
-	var profileDirectory string = filepath.Join(workingDirectory, viper.GetString(constants.PROFILE_DIRECTORY))
+	var profileDirectory string = filepath.Join(exeDir, viper.GetString(constants.PROFILE_DIRECTORY))
 	var finalArguments []string = strings.Split(viper.GetString(constants.CHROME_COMMAND_LINE_OPTIONS), constants.SPACE)
 	finalArguments = append(finalArguments, "--user-data-dir="+profileDirectory)
 	var newArgs = processArgs(args)
