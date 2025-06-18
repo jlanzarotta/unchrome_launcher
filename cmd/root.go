@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"ungoogled_launcher/constants"
+	"ungoogled_launcher/logger"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -14,6 +15,7 @@ import (
 )
 
 var cfgFile string
+var logfile os.File
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -120,6 +122,26 @@ func initConfig() {
 	viper.SetDefault(constants.INSTALLED_VERSION, constants.EMPTY)
 	viper.SetDefault(constants.CHROME_COMMAND_LINE_OPTIONS, "--no-default-browser-check")
 
+	// Read the configuration file.
+	err = viper.ReadInConfig()
+	if err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			// No config file, just use defaults.
+			viper.SafeWriteConfig()
+			viper.ReadInConfig()
+			log.Printf("%s: Unable to load config file, writing default values to [%s].\n\n",
+				color.HiBlueString(constants.INFO_NORMAL_CASE), viper.ConfigFileUsed())
+		} else {
+			log.Fatalf("%s: Error reading config file: %s\n",
+				color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
+			os.Exit(1)
+		}
+	}
+
+	if viper.GetBool(constants.DEBUG) {
+		logger.EnableFileLogging()
+	}
+
 	// Make sure the DOWNLOAD_DIRECTORY exists.
 	_, err = os.Stat(viper.GetString(constants.DOWNLOAD_DIRECTORY))
 	if os.IsNotExist(err) {
@@ -151,24 +173,5 @@ func initConfig() {
 				color.RedString(constants.FATAL_NORMAL_CASE), viper.GetString(constants.BIN_DIRECTORY), err.Error())
 			os.Exit(1)
 		}
-	}
-
-	// Read the configuration file.
-	err = viper.ReadInConfig()
-	if err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			// No config file, just use defaults.
-			viper.SafeWriteConfig()
-			viper.ReadInConfig()
-			log.Printf("%s: Unable to load config file, writing default values to [%s].\n\n",
-				color.HiBlueString(constants.INFO_NORMAL_CASE), viper.ConfigFileUsed())
-		} else {
-			log.Fatalf("%s: Error reading config file: %s\n",
-				color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
-			os.Exit(1)
-		}
-	}
-
-	if viper.GetBool(constants.DEBUG) {
 	}
 }

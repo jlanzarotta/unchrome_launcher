@@ -28,17 +28,36 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-package main
+package logger
 
 import (
-	"ungoogled_launcher/logger"
-	"ungoogled_launcher/cmd"
-	"ungoogled_launcher/constants"
+    "log"
+    "os"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func main() {
-	logger.InitLogFile(constants.APPLICATION_NAME_LOWERCASE + ".log")
+var logfile *os.File
+var logfileName string
 
-  	// If the user does not submit a command, use the default.
-  	cmd.Execute(constants.DEFAULT_COMMAND)
+func InitLogFile(path string) {
+	logfileName = path
+	DisableFileLogging()
+}
+
+func EnableFileLogging() {
+    log.SetOutput(&lumberjack.Logger{
+        Filename:   logfileName,
+        MaxSize:    10, // MB
+        MaxBackups: 1,
+        MaxAge:     1, // days
+        Compress:   true,
+    })
+}
+
+func DisableFileLogging() {
+    if logfile != nil {
+        logfile.Close()
+        logfile = nil
+    }
+    log.SetOutput(os.Stdout)
 }
