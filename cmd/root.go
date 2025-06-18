@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"ungoogled_launcher/constants"
+	"ungoogled_launcher/globals"
 	"ungoogled_launcher/logger"
 
 	"github.com/fatih/color"
@@ -142,35 +143,44 @@ func initConfig() {
 		logger.EnableFileLogging()
 	}
 
+	// Use the global ExeDir to make sure the necessary directories exist. If
+	// they do not exist, they are created.
+	if viper.GetBool(constants.DEBUG) {
+    	log.Println("Executable directory:", globals.ExeDir)
+	}
+
 	// Make sure the DOWNLOAD_DIRECTORY exists.
-	_, err = os.Stat(viper.GetString(constants.DOWNLOAD_DIRECTORY))
+    downloadDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.DOWNLOAD_DIRECTORY))
+	_, err = os.Stat(downloadDirectory)
 	if os.IsNotExist(err) {
-		err := os.MkdirAll(viper.GetString(constants.DOWNLOAD_DIRECTORY), 0755)
+		err := os.MkdirAll(downloadDirectory, 0755)
 		if err != nil {
 			log.Fatalf("%s: Failed to create download directory[%s]. Error[%s]\n",
-				color.RedString(constants.FATAL_NORMAL_CASE), viper.GetString(constants.DOWNLOAD_DIRECTORY), err.Error())
+				color.RedString(constants.FATAL_NORMAL_CASE), downloadDirectory, err.Error())
 			os.Exit(1)
 		}
 	}
 
 	// Make sure the PROFILE_DIRECTORY exists.
-	_, err = os.Stat(viper.GetString(constants.PROFILE_DIRECTORY))
+    profileDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.PROFILE_DIRECTORY))
+	_, err = os.Stat(profileDirectory)
 	if os.IsNotExist(err) {
-		err := os.MkdirAll(viper.GetString(constants.PROFILE_DIRECTORY), 0755)
+		err := os.MkdirAll(profileDirectory, 0755)
 		if err != nil {
 			log.Fatalf("%s: Failed to create profile directory[%s]. Error[%s]\n",
-				color.RedString(constants.FATAL_NORMAL_CASE), viper.GetString(constants.PROFILE_DIRECTORY), err.Error())
+				color.RedString(constants.FATAL_NORMAL_CASE), profileDirectory, err.Error())
 			os.Exit(1)
 		}
 	}
 
 	// Make sure the BIN_DIRECTORY exists.
-	_, err = os.Stat(viper.GetString(constants.BIN_DIRECTORY))
+    binDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.BIN_DIRECTORY))
+	_, err = os.Stat(binDirectory)
 	if os.IsNotExist(err) {
-		err := os.MkdirAll(viper.GetString(constants.BIN_DIRECTORY), 0755)
+		err := os.MkdirAll(binDirectory, 0755)
 		if err != nil {
 			log.Fatalf("%s: Failed to create bin directory[%s]. Error[%s]\n",
-				color.RedString(constants.FATAL_NORMAL_CASE), viper.GetString(constants.BIN_DIRECTORY), err.Error())
+				color.RedString(constants.FATAL_NORMAL_CASE), binDirectory, err.Error())
 			os.Exit(1)
 		}
 	}

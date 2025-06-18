@@ -31,13 +31,29 @@ POSSIBILITY OF SUCH DAMAGE.
 package main
 
 import (
-	"ungoogled_launcher/logger"
+	"fmt"
+	"os"
+	"path/filepath"
 	"ungoogled_launcher/cmd"
 	"ungoogled_launcher/constants"
+	"ungoogled_launcher/globals"
+	"ungoogled_launcher/logger"
+
+	"github.com/fatih/color"
 )
 
+
 func main() {
-	logger.InitLogFile(constants.APPLICATION_NAME_LOWERCASE + ".log")
+	// Find the directory where the Ungoogled Launcher executable is located.
+    exePath, err := os.Executable()
+    if err != nil {
+		fmt.Printf("%s: [%v]\n",
+			color.RedString(constants.FATAL_NORMAL_CASE), err)
+		os.Exit(1)
+    }
+    globals.ExeDir = filepath.Dir(exePath)
+
+	logger.InitLogFile(filepath.Join(globals.ExeDir, constants.APPLICATION_NAME_LOWERCASE + ".log"))
 
   	// If the user does not submit a command, use the default.
   	cmd.Execute(constants.DEFAULT_COMMAND)
