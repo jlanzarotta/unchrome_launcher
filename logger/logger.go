@@ -41,8 +41,7 @@ var logfileName string
 
 func InitLogFile(path string) {
 	logfileName = path
-	//DisableFileLogging()
-	EnableFileLogging()
+	DisableFileLogging()
 }
 
 func EnableFileLogging() {
@@ -53,7 +52,6 @@ func EnableFileLogging() {
         MaxAge:     1, // days
         Compress:   true,
     })
-    log.Println("LOGGING")
 }
 
 func DisableFileLogging() {

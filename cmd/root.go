@@ -139,6 +139,7 @@ func initConfig() {
 		}
 	}
 
+	// If debugging is set, log everything to the log file.
 	if viper.GetBool(constants.DEBUG) {
 		logger.EnableFileLogging()
 	}
