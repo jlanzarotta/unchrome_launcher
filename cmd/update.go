@@ -32,7 +32,6 @@ POSSIBILITY OF SUCH DAMAGE.
 package cmd
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -135,7 +134,6 @@ func update(_ *cobra.Command, _ []string) {
 		panic(err)
 	}
 
-	// 
 	var installedVersion string = viper.GetString(constants.INSTALLED_VERSION)
 	if strings.Compare(installedVersion, release.TagName) == 0 {
 		log.Printf("No need to update, you have the latest version[%s] installed.", release.TagName)
@@ -158,28 +156,6 @@ func update(_ *cobra.Command, _ []string) {
 	if downloadURL == "" {
 		panic("Asset not found in the latest release")
 	}
-
-	//fmt.Printf("Downloading asset: %s\n", downloadURL)
-
-	//// Step 3: Download the asset
-	//out, err := os.Create(assetName)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//defer out.Close()
-
-	//resp, err = http.Get(downloadURL)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//defer resp.Body.Close()
-
-	//_, err = io.Copy(out, resp.Body)
-	//if err != nil {
-	//	panic(err)
-	//}
-
-	//fmt.Println("Download complete!")
 
 	// Step 3: Download the asset
 	resp, err = getResponse(*&downloadURL)
@@ -246,9 +222,4 @@ func update(_ *cobra.Command, _ []string) {
 	viper.WriteConfig()
 
 	log.Printf("Done.\n");
-
-	if viper.GetBool(constants.PAUSE_AFTER_UPDATE) {
-		log.Print("Press 'Enter' to continue...")
-  		bufio.NewReader(os.Stdin).ReadBytes('\n')
-	}
 }

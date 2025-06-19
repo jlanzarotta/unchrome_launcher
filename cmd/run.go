@@ -32,6 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -42,6 +43,7 @@ import (
 
 	"ungoogled_launcher/constants"
 
+	"github.com/eiannone/keyboard"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -89,7 +91,7 @@ func run(_ *cobra.Command, args []string) {
 	// Find the directory where the Ungoogled Launcher executable is located.
     exePath, err := os.Executable()
     if err != nil {
-		log.Fatalf("%s: [%v]\n",
+		log.Fatalf("%s: %v\n",
 			color.RedString(constants.FATAL_NORMAL_CASE), err)
 		os.Exit(1)
     }
@@ -109,6 +111,43 @@ func run(_ *cobra.Command, args []string) {
 
 	runChrome(path, finalArguments)
 	findAndFocusWindowBySubstring("Chromium")
+
+	if viper.GetBool(constants.DEBUG) {
+		waitForKeyPress()
+	}
+}
+
+func findAndFocusWindowBySubstring(substring string) bool {
+	found := false
+
+	cb := syscall.NewCallback(func(hwnd uintptr, lparam uintptr) uintptr {
+		length, _, _ := procGetWindowTextLength.Call(hwnd)
+		if length == 0 {
+			return 1 // continue
+		}
+
+		buf := make([]uint16, length+1)
+		procGetWindowText.Call(hwnd, uintptr(unsafe.Pointer(&buf[0])), length+1)
+		title := syscall.UTF16ToString(buf)
+
+		if strings.Contains(strings.ToLower(title), strings.ToLower(substring)) {
+			if viper.GetBool(constants.DEBUG) {
+				log.Printf("Found window: \"%s\" (HWND: 0x%X)\n", title, hwnd)
+			}
+
+			// Bring to foreground.
+			procShowWindow.Call(hwnd, SW_SHOWNA)
+			procSetForegroundWindow.Call(hwnd)
+
+			found = true
+			return 0 // stop enumeration
+		}
+
+		return 1 // continue
+	})
+
+	procEnumWindows.Call(cb, 0)
+	return found
 }
 
 func runChrome(path string, arguments []string) {
@@ -146,36 +185,17 @@ func processArgs(args []string) []string {
 	return newArgs
 }
 
+func waitForKeyPress() {
+	if err := keyboard.Open(); err != nil {
+        log.Fatal(err)
+    }
+    defer keyboard.Close()
 
-func findAndFocusWindowBySubstring(substring string) bool {
-	found := false
-
-	cb := syscall.NewCallback(func(hwnd uintptr, lparam uintptr) uintptr {
-		length, _, _ := procGetWindowTextLength.Call(hwnd)
-		if length == 0 {
-			return 1 // continue
-		}
-
-		buf := make([]uint16, length+1)
-		procGetWindowText.Call(hwnd, uintptr(unsafe.Pointer(&buf[0])), length+1)
-		title := syscall.UTF16ToString(buf)
-
-		if strings.Contains(strings.ToLower(title), strings.ToLower(substring)) {
-			if viper.GetBool(constants.DEBUG) {
-				log.Printf("Found window: \"%s\" (HWND: 0x%X)\n", title, hwnd)
-			}
-
-			// Bring to foreground.
-			procShowWindow.Call(hwnd, SW_SHOWNA)
-			procSetForegroundWindow.Call(hwnd)
-
-			found = true
-			return 0 // stop enumeration
-		}
-
-		return 1 // continue
-	})
-
-	procEnumWindows.Call(cb, 0)
-	return found
+	fmt.Println("Press ANY key to continue...")
+    _, _, err := keyboard.GetSingleKey()
+    if err != nil {
+		log.Fatalf("%s: %v\n",
+			color.RedString(constants.FATAL_NORMAL_CASE), err)
+    }
 }
+

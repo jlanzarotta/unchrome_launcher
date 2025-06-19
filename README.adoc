@@ -14,7 +14,7 @@ Ungoogled Launcher is a simple command line tool use to update and run an instan
 
 == Installation
 
-You can install `khronos` using [scoop](https://scoop.sh/). It is in the `khronos` bucket:
+You can install Ungoogled Launcher using [scoop](https://scoop.sh/). It is in the `ungoogled_launcher` bucket:
 
 [source, shell]
 ----
@@ -54,7 +54,7 @@ item below it:
 
 === Default Configuration
 
-The default Microsoft Windows(R) Khronos configuration is as follows.  These
+The default Microsoft Windows(R) Ungoogled Launcher configuration is as follows.  These
 configuration options can be modified by the user after installation.
 
 [source, yaml]
