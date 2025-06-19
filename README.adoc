@@ -47,9 +47,6 @@ item below it:
 |Microsoft Windows(R)
 |. %XDG_CONFIG_HOME%/ungoogled_launcher/.ungoogled_launcher.yaml
 . %USERPROFILE%/.ungoogled_launcher.yaml
-|FreeBSD(R), Linux, macOS(R), etc.
-|. $XDG_CONFIG_HOME/ungoogled_launcher/.ungoogled_launcher.yaml
-. $HOME/.ungoogled_launcher.yaml
 |===
 
 === Default Configuration
@@ -64,15 +61,15 @@ chrome_command_line_options: --no-default-browser-check <2>
 debug: false <3>
 download_directory: download <4>
 installed_release: "" <5>
-pause_after_update: false <6>
+pause_after_run: false <6>
 ----
 
 <1> The directory there Ungoogled Launcher will install the Ungoogled Chromium runtime files.
 <2> Any additional command-line options used when running Chromium.
-<3> If debug information should be shown or not.
+<3> If debug information should be shown or not, and written to debug file.
 <4> The directory where Ungoogled Launcher downloads the latest release of Ungoogled Chromium.
 <5> The version number of the installed version of Ungoogled Chromium.
-<6> If Ungoogled Launcher should pause after a version has been updated.
+<6> If Ungoogled Launcher should pause after a successful run.
 
 === Default Browser
 
