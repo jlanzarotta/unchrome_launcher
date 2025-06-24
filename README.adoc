@@ -18,11 +18,11 @@ You can install Ungoogled Launcher using [scoop](https://scoop.sh/). It is in th
 
 [source, shell]
 ----
-# Add the Ungoogled Launcher bucket.
-> scoop bucket add ungoogled_launcher https://github.com/jlanzarotta/scoop-ungoogled_launcher
+# Add my scoops.
+> scoop bucket add jlanzarotta https://github.com/jlanzarotta/scoops
 
 # Install Ungoogled Launcher.
-> scoop install ungoogled_launcher
+> scoop install jlanzarotta/ungoogled_launcher
 ----
 
 === Other operating systems
