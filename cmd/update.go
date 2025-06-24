@@ -222,4 +222,8 @@ func update(_ *cobra.Command, _ []string) {
 	viper.WriteConfig()
 
 	log.Printf("Done.\n");
+
+	if viper.GetBool(constants.PAUSE_ON_UPDATE) {
+		waitForKeyPress()
+	}
 }

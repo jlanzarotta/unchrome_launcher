@@ -117,6 +117,7 @@ func initConfig() {
 	// Set various defaults.
 	viper.SetDefault(constants.DEBUG, false)
 	viper.SetDefault(constants.PAUSE_AFTER_RUN, false)
+	viper.SetDefault(constants.PAUSE_ON_UPDATE, false)
 	viper.SetDefault(constants.BIN_DIRECTORY, filepath.Join(".", "bin"))
 	viper.SetDefault(constants.DOWNLOAD_DIRECTORY, filepath.Join(".", "download"))
 	viper.SetDefault(constants.PROFILE_DIRECTORY, filepath.Join(".", "profile"))

@@ -112,7 +112,7 @@ func run(_ *cobra.Command, args []string) {
 	runChrome(path, finalArguments)
 	findAndFocusWindowBySubstring("Chromium")
 
-	if viper.GetBool(constants.DEBUG) {
+	if viper.GetBool(constants.PAUSE_AFTER_RUN) {
 		waitForKeyPress()
 	}
 }
