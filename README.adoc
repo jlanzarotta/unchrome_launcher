@@ -58,18 +58,20 @@ configuration options can be modified by the user after installation.
 ----
 bin_directory: bin <1>
 chrome_command_line_options: --no-default-browser-check <2>
-debug: false <3>
-download_directory: download <4>
-installed_release: "" <5>
-pause_after_run: false <6>
+chrome_distribution: ungoogled <3>
+debug: false <4>
+download_directory: download <5>
+installed_release: "" <6>
+pause_after_run: false <7>
 ----
 
 <1> The directory there Ungoogled Launcher will install the Ungoogled Chromium runtime files.
 <2> Any additional command-line options used when running Chromium.
-<3> If debug information should be shown or not, and written to debug file.
-<4> The directory where Ungoogled Launcher downloads the latest release of Ungoogled Chromium.
-<5> The version number of the installed version of Ungoogled Chromium.
-<6> If Ungoogled Launcher should pause after a successful run.
+<3> Which Chrome distribution you would like to use. Either `ungoogled` or `cromite`. The default is `ungoogled`.
+<4> If debug information should be shown or not, and written to debug file.
+<5> The directory where Ungoogled Launcher downloads the latest release of Ungoogled Chromium.
+<6> The version number of the installed version of Ungoogled Chromium.
+<7> If Ungoogled Launcher should pause after a successful run.
 
 === Default Browser
 
