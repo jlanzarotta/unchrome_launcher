@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"ungoogled_launcher/constants"
 )
 
 func unzip(src string, dest string) error {
@@ -20,12 +21,15 @@ func unzip(src string, dest string) error {
 		// Construct the full path for the destination. Since the zip file we
 		// are using has a subfolder, we need to remove the first directory as we
 		// unzip it.
-		fpath := filepath.Join(dest, removeFirstDir(f.Name))
+		if removeFirstDir(f.Name) == constants.EMPTY {
+			continue
+		}
 
+		fpath := filepath.Join(dest, removeFirstDir(f.Name))
 		//log.Printf("fpath[%s]\n", fpath)
 
-		// Prevent ZipSlip vulnerability
-		if !strings.HasPrefix(fpath, filepath.Clean(dest)+string(os.PathSeparator)) {
+		// Prevent ZipSlip vulnerability.
+		if !strings.HasPrefix(filepath.Clean(fpath), filepath.Clean(dest)+string(os.PathSeparator)) {
 			return fmt.Errorf("illegal file path: %s", fpath)
 		}
 

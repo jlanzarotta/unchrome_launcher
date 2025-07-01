@@ -53,7 +53,6 @@ import (
 const (
 	owner     = "ungoogled-software"         // GitHub repo owner
 	repo      = "ungoogled-chromium-windows" // GitHub repo name
-	tag       = "137.0.7151.68-1.1"          // Target release tag
 	assetName = "_windows_x64.zip"           // Name of the asset you want to download
 )
 
@@ -116,8 +115,24 @@ func getResponse(url string) (*http.Response, error) {
 }
 
 func update(_ *cobra.Command, _ []string) {
-	// Step 1: Get latest release info
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", owner, repo)
+	// Step 1: Get latest release info.
+	distribution := viper.GetString(constants.CHROME_DISTRIBUTION)
+	url := constants.EMPTY
+	assetName := constants.EMPTY
+
+	if strings.EqualFold(distribution, constants.UNGOOGLED_DISTRIBUTION) {
+		url  = constants.UNGOOGLED_CHROMIUM_GITHUB_URL
+		assetName = constants.UNGOOGLED_CHROMIUM_ASSET_NAME
+	} else {
+		url = constants.CROMITE_GITHUB_URL
+		assetName = constants.CROMITE_ASSET_NAME
+	}
+
+	if viper.GetBool(constants.DEBUG) {
+		log.Printf("Attempting to Update Distribution[%s] from URL[%s] with assetName[%s]", distribution, url, assetName)
+	}
+
+	//url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", owner, repo)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -140,11 +155,11 @@ func update(_ *cobra.Command, _ []string) {
 		return
 	}
 
-	log.Println("AUTOUPDATING to latest release version...")
+	log.Printf("AUTOUPDATING %s to latest release version...\n", distribution)
 	log.Println("      Installed Version:", installedVersion)
 	log.Println("Latest Released Version:", release.TagName)
 
-	// Step 2: Find the desired asset
+	// Step 2: Find the desired asset.
 	var downloadURL string
 	for _, asset := range release.Assets {
 		if strings.HasSuffix(asset.Name, assetName) {
@@ -153,8 +168,8 @@ func update(_ *cobra.Command, _ []string) {
 		}
 	}
 
-	if downloadURL == "" {
-		panic("Asset not found in the latest release")
+	if downloadURL == constants.EMPTY {
+		panic("Asset not found in the latest release!")
 	}
 
 	// Step 3: Download the asset
@@ -174,8 +189,28 @@ func update(_ *cobra.Command, _ []string) {
 		os.Exit(1)
 	}
 
+	// Find the directory where the Ungoogled Launcher executable is located.
+    exePath, err := os.Executable()
+    if err != nil {
+		log.Fatalf("%s: %v\n",
+			color.RedString(constants.FATAL_NORMAL_CASE), err)
+		os.Exit(1)
+    }
+    exeDir := filepath.Dir(exePath)
+
+	if viper.GetBool(constants.DEBUG) {
+		log.Printf("ExeDir[%s].", exeDir)
+	}
+
+	// Construct the full download path.
+	var downloadPath string = filepath.Join(exeDir, viper.GetString(constants.DOWNLOAD_DIRECTORY))
+
+	if viper.GetBool(constants.DEBUG) {
+		log.Printf("DownloadDir[%s].", downloadPath)
+	}
+
 	filename := filepath.Base(*&downloadURL)
-	file, err := os.Create(filepath.Join(viper.GetString(constants.DOWNLOAD_DIRECTORY), filename))
+	file, err := os.Create(filepath.Join(downloadPath, filename))
 	if err != nil {
 		log.Fatalf("%s: could not create file: %s.\n",
 			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
@@ -197,10 +232,10 @@ func update(_ *cobra.Command, _ []string) {
 		progress: progress.New(progress.WithSolidFill("#00CC00")),
 	}
 
-	// Start Bubble Tea
+	// Start Bubble Tea.
 	p = tea.NewProgram(m)
 
-	// Start the download
+	// Start the download.
 	go pw.Start()
 
 	if _, err := p.Run(); err != nil {
@@ -209,8 +244,15 @@ func update(_ *cobra.Command, _ []string) {
 		os.Exit(1)
 	}
 
+	// Construct the full bin path.
+	var binPath string = filepath.Join(exeDir, viper.GetString(constants.BIN_DIRECTORY), string(os.PathSeparator))
+
+	if viper.GetBool(constants.DEBUG) {
+		log.Printf("Attempting to unzip [%s] into [%s].", file.Name(), binPath)
+	}
+
 	// Step 4: Unzip the contents of the downloaded file to the BIN_DIRECTORY.
-	err = unzip(file.Name(), viper.GetString(constants.BIN_DIRECTORY))
+	err = unzip(file.Name(), binPath)
 	if err != nil {
 		log.Fatalf("%s: %s\n",
 			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())

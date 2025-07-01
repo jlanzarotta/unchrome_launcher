@@ -122,6 +122,7 @@ func initConfig() {
 	viper.SetDefault(constants.DOWNLOAD_DIRECTORY, filepath.Join(".", "download"))
 	viper.SetDefault(constants.PROFILE_DIRECTORY, filepath.Join(".", "profile"))
 	viper.SetDefault(constants.INSTALLED_VERSION, constants.EMPTY)
+	viper.SetDefault(constants.CHROME_DISTRIBUTION, constants.UNGOOGLED_DISTRIBUTION)
 	viper.SetDefault(constants.CHROME_COMMAND_LINE_OPTIONS, "--no-default-browser-check")
 
 	// Read the configuration file.
@@ -139,6 +140,16 @@ func initConfig() {
 			os.Exit(1)
 		}
 	}
+
+	// Make sure the CHROME_DISTRIBUTION is set to one of our supported distributions.
+	distribution := viper.GetString(constants.CHROME_DISTRIBUTION)
+	if strings.EqualFold(distribution, constants.UNGOOGLED_DISTRIBUTION) == false &&
+		strings.EqualFold(distribution, constants.CROMITE_DISTRIBUTION) == false {
+			log.Fatalf("%s: Unsupported distribution[%s] found. Valid distributions are '%s', and '%s'.\n",
+				color.RedString(constants.FATAL_NORMAL_CASE), distribution,
+				constants.UNGOOGLED_DISTRIBUTION, constants.CROMITE_DISTRIBUTION)
+			os.Exit(1)
+		}
 
 	// If debugging is set, log everything to the log file.
 	if viper.GetBool(constants.DEBUG) {
