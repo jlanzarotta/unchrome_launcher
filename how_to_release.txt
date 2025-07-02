@@ -5,6 +5,7 @@ To make a release...
 1. Make changes.
 2. Update dependencies with "go get -u"
 3. Build
+4. Do a prerelease "goreleaser --clean --snapshot"
 4. Commit and push changes.
 5. git tag -a 0.1.0 -m "Release 0.1.0."
 6. git push origin 0.1.0
