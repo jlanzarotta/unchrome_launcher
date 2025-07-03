@@ -141,20 +141,22 @@ func initConfig() {
 		}
 	}
 
-	// Make sure the CHROME_DISTRIBUTION is set to one of our supported distributions.
-	distribution := viper.GetString(constants.CHROME_DISTRIBUTION)
-	if strings.EqualFold(distribution, constants.UNGOOGLED_DISTRIBUTION) == false &&
-		strings.EqualFold(distribution, constants.CROMITE_DISTRIBUTION) == false {
-			log.Fatalf("%s: Unsupported distribution[%s] found. Valid distributions are '%s', and '%s'.\n",
-				color.RedString(constants.FATAL_NORMAL_CASE), distribution,
-				constants.UNGOOGLED_DISTRIBUTION, constants.CROMITE_DISTRIBUTION)
-			os.Exit(1)
-		}
-
 	// If debugging is set, log everything to the log file.
 	if viper.GetBool(constants.DEBUG) {
 		logger.EnableFileLogging()
 	}
+
+	// Make sure the CHROME_DISTRIBUTION is set to one of our supported distributions.
+	distribution := viper.GetString(constants.CHROME_DISTRIBUTION)
+	if strings.EqualFold(distribution, constants.UNGOOGLED_DISTRIBUTION) == false &&
+		strings.EqualFold(distribution, constants.UNGOOGLED_WINCHROME_DISTRIBUTION) == false &&
+		strings.EqualFold(distribution, constants.CROMITE_DISTRIBUTION) == false {
+			log.Fatalf("%s: Unsupported distribution[%s] found. Valid distributions are '%s', '%s',and '%s'.\n",
+				color.RedString(constants.FATAL_NORMAL_CASE), distribution,
+				constants.UNGOOGLED_DISTRIBUTION, constants.UNGOOGLED_WINCHROME_DISTRIBUTION,
+				constants.CROMITE_DISTRIBUTION)
+			os.Exit(1)
+		}
 
 	// Use the global ExeDir to make sure the necessary directories exist. If
 	// they do not exist, they are created.

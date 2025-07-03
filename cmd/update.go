@@ -50,12 +50,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-const (
-	owner     = "ungoogled-software"         // GitHub repo owner
-	repo      = "ungoogled-chromium-windows" // GitHub repo name
-	assetName = "_windows_x64.zip"           // Name of the asset you want to download
-)
-
 type Release struct {
 	TagName string `json:"tag_name"`
 	Assets  []struct {
@@ -123,6 +117,9 @@ func update(_ *cobra.Command, _ []string) {
 	if strings.EqualFold(distribution, constants.UNGOOGLED_DISTRIBUTION) {
 		url  = constants.UNGOOGLED_CHROMIUM_GITHUB_URL
 		assetName = constants.UNGOOGLED_CHROMIUM_ASSET_NAME
+	} else if strings.EqualFold(distribution, constants.UNGOOGLED_WINCHROME_DISTRIBUTION) {
+		url  = constants.UNGOOGLED_WINCHROME_GITHUB_URL
+		assetName = constants.UNGOOGLED_WINCHROME_ASSET_NAME
 	} else {
 		url = constants.CROMITE_GITHUB_URL
 		assetName = constants.CROMITE_ASSET_NAME
@@ -131,8 +128,6 @@ func update(_ *cobra.Command, _ []string) {
 	if viper.GetBool(constants.DEBUG) {
 		log.Printf("Attempting to Update Distribution[%s] from URL[%s] with assetName[%s]", distribution, url, assetName)
 	}
-
-	//url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", owner, repo)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -247,9 +242,7 @@ func update(_ *cobra.Command, _ []string) {
 	// Construct the full bin path.
 	var binPath string = filepath.Join(exeDir, viper.GetString(constants.BIN_DIRECTORY), string(os.PathSeparator))
 
-	if viper.GetBool(constants.DEBUG) {
-		log.Printf("Attempting to unzip [%s] into [%s].", file.Name(), binPath)
-	}
+	log.Printf("Please wait... Uncompressing...\n[%s]\ninto\n[%s].", file.Name(), binPath)
 
 	// Step 4: Unzip the contents of the downloaded file to the BIN_DIRECTORY.
 	err = unzip(file.Name(), binPath)
