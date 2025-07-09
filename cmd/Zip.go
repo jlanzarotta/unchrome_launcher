@@ -12,6 +12,7 @@ import (
 
 	"github.com/bodgit/sevenzip"
 	"github.com/fatih/color"
+	"github.com/schollz/progressbar/v3"
 )
 
 func unzip(src string, dest string) error {
@@ -24,7 +25,13 @@ func unzip(src string, dest string) error {
     	}
     	defer r.Close()
 
+		bar := progressbar.NewOptions(
+			len(r.File),
+			progressbar.OptionShowCount(),
+			progressbar.OptionSetDescription("unzipping"))
+
     	for _, f := range r.File {
+			bar.Add(1)
 			// Construct the full path for the destination. Since the zip file we
 			// are using has a subfolder, we need to remove the first directory as we
 			// unzip it.
@@ -80,7 +87,13 @@ func unzip(src string, dest string) error {
 		}
 		defer r.Close()
 
+		bar := progressbar.NewOptions(
+			len(r.File),
+			progressbar.OptionShowCount(),
+			progressbar.OptionSetDescription("unzipping"))
+
 		for _, f := range r.File {
+			bar.Add(1)
 			// Construct the full path for the destination. Since the zip file we
 			// are using has a subfolder, we need to remove the first directory as we
 			// unzip it.
@@ -127,6 +140,8 @@ func unzip(src string, dest string) error {
 				}
 			}
 		}
+
+    	fmt.Println("Extraction complete.")
 	}
 
 	return nil

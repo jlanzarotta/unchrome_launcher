@@ -46,8 +46,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/charmbracelet/bubbles/progress"
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/schollz/progressbar/v3"
+
 )
 
 type Release struct {
@@ -58,7 +58,7 @@ type Release struct {
 	} `json:"assets"`
 }
 
-var p *tea.Program
+//var p *tea.Program
 
 type progressWriter struct {
 	total      int
@@ -80,43 +80,15 @@ func init() {
 	rootCmd.AddCommand(updateCmd)
 }
 
-func (pw *progressWriter) Start() {
-	// TeeReader calls pw.Write() each time a new response is received
-	_, err := io.Copy(pw.file, io.TeeReader(pw.reader, pw))
-	if err != nil {
-		p.Send(progressErrMsg{err})
-	}
-}
-
-func (pw *progressWriter) Write(p []byte) (int, error) {
-	pw.downloaded += len(p)
-	if pw.total > 0 && pw.onProgress != nil {
-		pw.onProgress(float64(pw.downloaded) / float64(pw.total))
-	}
-	return len(p), nil
-}
-
-func getResponse(url string) (*http.Response, error) {
-	resp, err := http.Get(url) // nolint:gosec
-	if err != nil {
-		log.Fatalf("%s: %s\n",
-			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("receiving status of %d for url: %s", resp.StatusCode, url)
-	}
-	return resp, nil
-}
-
 func update(_ *cobra.Command, _ []string) {
 	// Step 1: Get latest release info.
 	distribution := viper.GetString(constants.CHROME_DISTRIBUTION)
 	url := constants.EMPTY
 	assetName := constants.EMPTY
 
-	if strings.EqualFold(distribution, constants.UNGOOGLED_DISTRIBUTION) {
-		url  = constants.UNGOOGLED_CHROMIUM_GITHUB_URL
-		assetName = constants.UNGOOGLED_CHROMIUM_ASSET_NAME
+	if strings.EqualFold(distribution, constants.UNGOOGLED_CHROMIUM_DISTRIBUTION) {
+		url  = constants.UNGOOGLED_CHROMIUM_WINDOWS_GITHUB_URL
+		assetName = constants.UNGOOGLED_CHROMIUM_WINDOWS_ASSET_NAME
 	} else if strings.EqualFold(distribution, constants.UNGOOGLED_WINCHROME_DISTRIBUTION) {
 		url  = constants.UNGOOGLED_WINCHROME_GITHUB_URL
 		assetName = constants.UNGOOGLED_WINCHROME_ASSET_NAME
@@ -167,23 +139,6 @@ func update(_ *cobra.Command, _ []string) {
 		panic("Asset not found in the latest release!")
 	}
 
-	// Step 3: Download the asset
-	resp, err = getResponse(*&downloadURL)
-	if err != nil {
-		log.Fatalf("%s: could not get response: %s\n",
-			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
-		os.Exit(1)
-	}
-	defer resp.Body.Close() // nolint:errcheck
-
-	// Don't add TUI if the header doesn't include content size
-	// it's impossible see progress without total
-	if resp.ContentLength <= 0 {
-		log.Fatalf("%s: could not parse content length, aborting download.\n",
-			color.RedString(constants.FATAL_NORMAL_CASE))
-		os.Exit(1)
-	}
-
 	// Find the directory where the Ungoogled Launcher executable is located.
     exePath, err := os.Executable()
     if err != nil {
@@ -213,31 +168,16 @@ func update(_ *cobra.Command, _ []string) {
 	}
 	defer file.Close() // nolint:errcheck
 
-	pw := &progressWriter{
-		total:  int(resp.ContentLength),
-		file:   file,
-		reader: resp.Body,
-		onProgress: func(ratio float64) {
-			p.Send(progressMsg(ratio))
-		},
-	}
+	// Step 3: Download the asset
+	req, _ := http.NewRequest("GET", downloadURL, nil)
+	resp, _ = http.DefaultClient.Do(req)
+	defer check(resp.Body.Close)
 
-	m := model{
-		pw:       pw,
-		progress: progress.New(progress.WithSolidFill("#00CC00")),
-	}
-
-	// Start Bubble Tea.
-	p = tea.NewProgram(m)
-
-	// Start the download.
-	go pw.Start()
-
-	if _, err := p.Run(); err != nil {
-		log.Fatalf("%s: error running program: %s.\n",
-			color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
-		os.Exit(1)
-	}
+	bar := progressbar.DefaultBytes(
+		resp.ContentLength,
+		"downloading",
+	)
+	io.Copy(io.MultiWriter(file, bar), resp.Body)
 
 	// Construct the full bin path.
 	var binPath string = filepath.Join(exeDir, viper.GetString(constants.BIN_DIRECTORY), string(os.PathSeparator))
@@ -260,5 +200,12 @@ func update(_ *cobra.Command, _ []string) {
 
 	if viper.GetBool(constants.PAUSE_ON_UPDATE) {
 		waitForKeyPress()
+	}
+}
+
+// check checks the returned error of a function.
+func check(f func() error) {
+	if err := f(); err != nil {
+		fmt.Fprintf(os.Stderr, "received error: %v\n", err)
 	}
 }
