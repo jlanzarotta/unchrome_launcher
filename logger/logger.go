@@ -31,8 +31,9 @@ POSSIBILITY OF SUCH DAMAGE.
 package logger
 
 import (
-    "log"
-    "os"
+	"log"
+	"os"
+
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
@@ -40,24 +41,26 @@ var logfile *os.File
 var logfileName string
 
 func InitLogFile(path string) {
+	// Turn off ALL logging flags.
+	log.SetFlags(0)
 	logfileName = path
 	DisableFileLogging()
 }
 
 func EnableFileLogging() {
-    log.SetOutput(&lumberjack.Logger{
-        Filename:   logfileName,
-        MaxSize:    10, // MB
-        MaxBackups: 1,
-        MaxAge:     1, // days
-        Compress:   true,
-    })
+	log.SetOutput(&lumberjack.Logger{
+		Filename:   logfileName,
+		MaxSize:    10, // MB
+		MaxBackups: 1,
+		MaxAge:     1, // days
+		Compress:   true,
+	})
 }
 
 func DisableFileLogging() {
-    if logfile != nil {
-        logfile.Close()
-        logfile = nil
-    }
-    log.SetOutput(os.Stdout)
+	if logfile != nil {
+		logfile.Close()
+		logfile = nil
+	}
+	log.SetOutput(os.Stdout)
 }

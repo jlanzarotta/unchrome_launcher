@@ -47,7 +47,6 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/schollz/progressbar/v3"
-
 )
 
 type Release struct {
@@ -87,10 +86,10 @@ func update(_ *cobra.Command, _ []string) {
 	assetName := constants.EMPTY
 
 	if strings.EqualFold(distribution, constants.UNGOOGLED_CHROMIUM_DISTRIBUTION) {
-		url  = constants.UNGOOGLED_CHROMIUM_WINDOWS_GITHUB_URL
+		url = constants.UNGOOGLED_CHROMIUM_WINDOWS_GITHUB_URL
 		assetName = constants.UNGOOGLED_CHROMIUM_WINDOWS_ASSET_NAME
 	} else if strings.EqualFold(distribution, constants.UNGOOGLED_WINCHROME_DISTRIBUTION) {
-		url  = constants.UNGOOGLED_WINCHROME_GITHUB_URL
+		url = constants.UNGOOGLED_WINCHROME_GITHUB_URL
 		assetName = constants.UNGOOGLED_WINCHROME_ASSET_NAME
 	} else {
 		url = constants.CROMITE_GITHUB_URL
@@ -140,13 +139,13 @@ func update(_ *cobra.Command, _ []string) {
 	}
 
 	// Find the directory where the Ungoogled Launcher executable is located.
-    exePath, err := os.Executable()
-    if err != nil {
+	exePath, err := os.Executable()
+	if err != nil {
 		log.Fatalf("%s: %v\n",
 			color.RedString(constants.FATAL_NORMAL_CASE), err)
 		os.Exit(1)
-    }
-    exeDir := filepath.Dir(exePath)
+	}
+	exeDir := filepath.Dir(exePath)
 
 	if viper.GetBool(constants.DEBUG) {
 		log.Printf("ExeDir[%s].", exeDir)
@@ -182,7 +181,7 @@ func update(_ *cobra.Command, _ []string) {
 	// Construct the full bin path.
 	var binPath string = filepath.Join(exeDir, viper.GetString(constants.BIN_DIRECTORY), string(os.PathSeparator))
 
-	log.Printf("Please wait... Uncompressing...\n[%s]\ninto\n[%s].", file.Name(), binPath)
+	log.Printf("Unzipping [%s] into [%s]...", file.Name(), binPath)
 
 	// Step 4: Unzip the contents of the downloaded file to the BIN_DIRECTORY.
 	err = unzip(file.Name(), binPath)
@@ -196,7 +195,7 @@ func update(_ *cobra.Command, _ []string) {
 	viper.Set(constants.INSTALLED_VERSION, release.TagName)
 	viper.WriteConfig()
 
-	log.Printf("Done.\n");
+	log.Printf("Done.\n")
 
 	if viper.GetBool(constants.PAUSE_ON_UPDATE) {
 		waitForKeyPress()
