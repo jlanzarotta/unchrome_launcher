@@ -1,8 +1,8 @@
-image:https://img.shields.io/github/v/release/jlanzarotta/ungoogled_launcher[GitHub Release]
-image:https://img.shields.io/github/downloads/jlanzarotta/ungoogled_launcher/total[GitHub Downloads (all assets, all releases)]
-image:https://img.shields.io/github/go-mod/go-version/jlanzarotta/ungoogled_launcher[Go Version]
+image:https://img.shields.io/github/v/release/jlanzarotta/unchromed_launcher[GitHub Release]
+image:https://img.shields.io/github/downloads/jlanzarotta/unchromed_launcher/total[GitHub Downloads (all assets, all releases)]
+image:https://img.shields.io/github/go-mod/go-version/jlanzarotta/unchromed_launcher[Go Version]
 
-= Ungoogled Launcher
+= Unchromed Launcher
 :toc: preamble
 :toclevels: 7
 :icons: font
@@ -10,76 +10,76 @@ image:https://img.shields.io/github/go-mod/go-version/jlanzarotta/ungoogled_laun
 :numbered:
 :table-stripes: even
 
-Ungoogled Launcher is a simple command line tool use to update and run an instance of Ungoogled Chromium.
+Unchromed Launcher is a simple command line tool use to update and run an instance of Unchromed Chromium.
 
 == Installation
 
-You can install Ungoogled Launcher using [scoop](https://scoop.sh/). It is in the `ungoogled_launcher` bucket:
+You can install Unchromed Launcher using [scoop](https://scoop.sh/). It is in the `unchromed_launcher` bucket:
 
 [source, shell]
 ----
 # Add my scoops.
 > scoop bucket add jlanzarotta https://github.com/jlanzarotta/scoops
 
-# Install Ungoogled Launcher.
-> scoop install jlanzarotta/ungoogled_launcher
+# Install Unchromed Launcher.
+> scoop install jlanzarotta/unchromed_launcher
 ----
 
 === Other operating systems
 
-To install Ungoogled Launcher, simply unzip the archive for your specific
+To install Unchromed Launcher, simply unzip the archive for your specific
 operating system into the directory of your choice.
 
 == Configuration
 
-When Ungoogled Launcher starts up, it checks to make sure there is a default
+When Unchromed Launcher starts up, it checks to make sure there is a default
 configuration file.  If it does not exist, it is automatically created for you.
 
-NOTE: Ungoogled Launcher support the use of the _XDG Base Directory
+NOTE: Unchromed Launcher support the use of the _XDG Base Directory
 Specification_. For more information https://specifications.freedesktop.org/basedir-spec/latest/
 
-Ungoogled Launcher uses the following precedence order when determining where
+Unchromed Launcher uses the following precedence order when determining where
 the configuration file is located. Each item listed, takes precedence over the
 item below it:
 
 [cols="1,1a"]
 |===
 |Microsoft Windows(R)
-|. %XDG_CONFIG_HOME%/ungoogled_launcher/.ungoogled_launcher.yaml
-. %USERPROFILE%/.ungoogled_launcher.yaml
+|. %XDG_CONFIG_HOME%/unchromed_launcher/.unchromed_launcher.yaml
+. %USERPROFILE%/.unchromed_launcher.yaml
 |===
 
 === Default Configuration
 
-The default Microsoft Windows(R) Ungoogled Launcher configuration is as follows.  These
+The default Microsoft Windows(R) Unchromed Launcher configuration is as follows.  These
 configuration options can be modified by the user after installation.
 
 [source, yaml]
 ----
 bin_directory: bin <1>
 chrome_command_line_options: --no-default-browser-check <2>
-chrome_distribution: ungoogled <3>
+chrome_distribution: unchromed <3>
 debug: false <4>
 download_directory: download <5>
 installed_release: "" <6>
 pause_after_run: false <7>
 ----
 
-<1> The directory there Ungoogled Launcher will install the Ungoogled Chromium runtime files.
+<1> The directory there Unchromed Launcher will install the Unchromed Chromium runtime files.
 <2> Any additional command-line options used when running Chromium.
-<3> Which Chrome distribution you would like to use. Either `ungoogled` or `cromite`. The default is `ungoogled`.
+<3> Which Chrome distribution you would like to use. Either `unchromed` or `cromite`. The default is `unchromed`.
 <4> If debug information should be shown or not, and written to debug file.
-<5> The directory where Ungoogled Launcher downloads the latest release of Ungoogled Chromium.
-<6> The version number of the installed version of Ungoogled Chromium.
-<7> If Ungoogled Launcher should pause after a successful run.
+<5> The directory where Unchromed Launcher downloads the latest release of Unchromed Chromium.
+<6> The version number of the installed version of Unchromed Chromium.
+<7> If Unchromed Launcher should pause after a successful run.
 
 === Default Browser
 
-Ungoogled Launcher has feature to use portable Chromium as default browser and
-it will be open links from another programs through Ungoogled Launcher.
+Unchromed Launcher has feature to use portable Chromium as default browser and
+it will be open links from another programs through Unchromed Launcher.
 
 - start "SetDefaultBrowser.bat" (as admin).
-- start "Control panel" -> "Default programs" -> "Set your default programs" -> "Ungoogled Launcher" and set all checkboxes on.
+- start "Control panel" -> "Default programs" -> "Set your default programs" -> "Unchromed Launcher" and set all checkboxes on.
 
 == Copyright and License
 

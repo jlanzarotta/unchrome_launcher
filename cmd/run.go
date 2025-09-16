@@ -41,7 +41,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"ungoogled_launcher/constants"
+	"unchromed_launcher/constants"
 
 	"github.com/eiannone/keyboard"
 	"github.com/fatih/color"
@@ -88,7 +88,7 @@ func run(_ *cobra.Command, args []string) {
 	// Then we run.
 	// Command and its arguments
 
-	// Find the directory where the Ungoogled Launcher executable is located.
+	// Find the directory where the Unchromed Launcher executable is located.
     exePath, err := os.Executable()
     if err != nil {
 		log.Fatalf("%s: %v\n",

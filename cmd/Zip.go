@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"ungoogled_launcher/constants"
+	"unchromed_launcher/constants"
 
 	"github.com/bodgit/sevenzip"
 	"github.com/fatih/color"

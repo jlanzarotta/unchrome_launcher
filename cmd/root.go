@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"ungoogled_launcher/constants"
-	"ungoogled_launcher/globals"
-	"ungoogled_launcher/logger"
+	"unchromed_launcher/constants"
+	"unchromed_launcher/globals"
+	"unchromed_launcher/logger"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -74,7 +74,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", constants.EMPTY, "config file (default is $HOME/.ungoogled_launcher.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", constants.EMPTY, "config file (default is $HOME/.unchromed_launcher.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -106,9 +106,9 @@ func initConfig() {
 		// Add the user's home directory to the search path.
 		viper.AddConfigPath(home)
 
-		// Add the Ungoogled Launcher configuration file and extension type.
+		// Add the Unchromed Launcher configuration file and extension type.
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".ungoogled_launcher")
+		viper.SetConfigName(".unchromed_launcher")
 	}
 
 	// Read in environment variables that match.
@@ -122,7 +122,7 @@ func initConfig() {
 	viper.SetDefault(constants.DOWNLOAD_DIRECTORY, filepath.Join(".", "download"))
 	viper.SetDefault(constants.PROFILE_DIRECTORY, filepath.Join(".", "profile"))
 	viper.SetDefault(constants.INSTALLED_VERSION, constants.EMPTY)
-	viper.SetDefault(constants.CHROME_DISTRIBUTION, constants.UNGOOGLED_CHROMIUM_DISTRIBUTION)
+	viper.SetDefault(constants.CHROME_DISTRIBUTION, constants.UNCHROMED_CHROMIUM_DISTRIBUTION)
 	viper.SetDefault(constants.CHROME_COMMAND_LINE_OPTIONS, "--no-default-browser-check")
 
 	// Read the configuration file.
@@ -148,12 +148,12 @@ func initConfig() {
 
 	// Make sure the CHROME_DISTRIBUTION is set to one of our supported distributions.
 	distribution := viper.GetString(constants.CHROME_DISTRIBUTION)
-	if strings.EqualFold(distribution, constants.UNGOOGLED_CHROMIUM_DISTRIBUTION) == false &&
-		strings.EqualFold(distribution, constants.UNGOOGLED_WINCHROME_DISTRIBUTION) == false &&
+	if strings.EqualFold(distribution, constants.UNCHROMED_CHROMIUM_DISTRIBUTION) == false &&
+		strings.EqualFold(distribution, constants.UNCHROMED_WINCHROME_DISTRIBUTION) == false &&
 		strings.EqualFold(distribution, constants.CROMITE_DISTRIBUTION) == false {
 			log.Fatalf("%s: Unsupported distribution[%s] found. Valid distributions are '%s', '%s',and '%s'.\n",
 				color.RedString(constants.FATAL_NORMAL_CASE), distribution,
-				constants.UNGOOGLED_CHROMIUM_DISTRIBUTION, constants.UNGOOGLED_WINCHROME_DISTRIBUTION,
+				constants.UNCHROMED_CHROMIUM_DISTRIBUTION, constants.UNCHROMED_WINCHROME_DISTRIBUTION,
 				constants.CROMITE_DISTRIBUTION)
 			os.Exit(1)
 		}

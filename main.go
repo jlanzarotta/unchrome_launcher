@@ -34,17 +34,17 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"ungoogled_launcher/cmd"
-	"ungoogled_launcher/constants"
-	"ungoogled_launcher/globals"
-	"ungoogled_launcher/logger"
+	"unchromed_launcher/cmd"
+	"unchromed_launcher/constants"
+	"unchromed_launcher/globals"
+	"unchromed_launcher/logger"
 
 	"github.com/fatih/color"
 )
 
 
 func main() {
-	// Find the directory where the Ungoogled Launcher executable is located.
+	// Find the directory where the Unchromed Launcher executable is located.
     exePath, err := os.Executable()
     if err != nil {
 		fmt.Printf("%s: [%v]\n",

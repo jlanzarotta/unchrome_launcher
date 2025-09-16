@@ -40,7 +40,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"ungoogled_launcher/constants"
+	"unchromed_launcher/constants"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -85,12 +85,12 @@ func update(_ *cobra.Command, _ []string) {
 	url := constants.EMPTY
 	assetName := constants.EMPTY
 
-	if strings.EqualFold(distribution, constants.UNGOOGLED_CHROMIUM_DISTRIBUTION) {
-		url = constants.UNGOOGLED_CHROMIUM_WINDOWS_GITHUB_URL
-		assetName = constants.UNGOOGLED_CHROMIUM_WINDOWS_ASSET_NAME
-	} else if strings.EqualFold(distribution, constants.UNGOOGLED_WINCHROME_DISTRIBUTION) {
-		url = constants.UNGOOGLED_WINCHROME_GITHUB_URL
-		assetName = constants.UNGOOGLED_WINCHROME_ASSET_NAME
+	if strings.EqualFold(distribution, constants.UNCHROMED_CHROMIUM_DISTRIBUTION) {
+		url = constants.UNCHROMED_CHROMIUM_WINDOWS_GITHUB_URL
+		assetName = constants.UNCHROMED_CHROMIUM_WINDOWS_ASSET_NAME
+	} else if strings.EqualFold(distribution, constants.UNCHROMED_WINCHROME_DISTRIBUTION) {
+		url = constants.UNCHROMED_WINCHROME_GITHUB_URL
+		assetName = constants.UNCHROMED_WINCHROME_ASSET_NAME
 	} else {
 		url = constants.CROMITE_GITHUB_URL
 		assetName = constants.CROMITE_ASSET_NAME
@@ -138,7 +138,7 @@ func update(_ *cobra.Command, _ []string) {
 		panic("Asset not found in the latest release!")
 	}
 
-	// Find the directory where the Ungoogled Launcher executable is located.
+	// Find the directory where the Unchromed Launcher executable is located.
 	exePath, err := os.Executable()
 	if err != nil {
 		log.Fatalf("%s: %v\n",

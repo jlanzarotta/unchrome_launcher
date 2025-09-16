@@ -1,4 +1,4 @@
-module ungoogled_launcher
+module unchromed_launcher
 
 go 1.24.2
 

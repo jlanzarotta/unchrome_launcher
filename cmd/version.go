@@ -38,7 +38,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
-	"ungoogled_launcher/constants"
+	"unchromed_launcher/constants"
 )
 
 var BuildVersion string
