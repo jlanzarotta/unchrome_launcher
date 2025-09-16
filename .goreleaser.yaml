@@ -99,8 +99,8 @@ changelog:
 release:
   draft: false
   replace_existing_draft: true
-#  footer: |
-#    **Full Changelog**: https://github.com/jlanzarotta/unchrome_launcher/compare/{{ .PreviousTag }}...{{ .Tag }}
+  footer: |
+    **Full Changelog**: https://github.com/jlanzarotta/unchrome_launcher/compare/{{ .PreviousTag }}...{{ .Tag }}
 
 scoops:
   - name: unchromed_launcher
