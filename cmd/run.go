@@ -151,6 +151,10 @@ func findAndFocusWindowBySubstring(substring string) bool {
 }
 
 func runChrome(path string, arguments []string) {
+	if viper.GetBool(constants.DEBUG) {
+    	log.Printf("Running Path[%s] Args[%v]...\n", path, arguments)
+	}
+
 	cmd := exec.Command(path, arguments...)
 	err := cmd.Start()
 	if err != nil {
