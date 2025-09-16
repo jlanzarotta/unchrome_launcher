@@ -85,12 +85,12 @@ func update(_ *cobra.Command, _ []string) {
 	url := constants.EMPTY
 	assetName := constants.EMPTY
 
-	if strings.EqualFold(distribution, constants.UNCHROME_CHROMIUM_DISTRIBUTION) {
-		url = constants.UNCHROME_CHROMIUM_WINDOWS_GITHUB_URL
-		assetName = constants.UNCHROME_CHROMIUM_WINDOWS_ASSET_NAME
-	} else if strings.EqualFold(distribution, constants.UNCHROME_WINCHROME_DISTRIBUTION) {
-		url = constants.UNCHROME_WINCHROME_GITHUB_URL
-		assetName = constants.UNCHROME_WINCHROME_ASSET_NAME
+	if strings.EqualFold(distribution, constants.UNGOOGLED_CHROMIUM_DISTRIBUTION) {
+		url = constants.UNGOOGLED_CHROMIUM_WINDOWS_GITHUB_URL
+		assetName = constants.UNGOOGLED_CHROMIUM_WINDOWS_ASSET_NAME
+	} else if strings.EqualFold(distribution, constants.UNGOOGLED_WINCHROME_DISTRIBUTION) {
+		url = constants.UNGOOGLED_WINCHROME_GITHUB_URL
+		assetName = constants.UNGOOGLED_WINCHROME_ASSET_NAME
 	} else {
 		url = constants.CROMITE_GITHUB_URL
 		assetName = constants.CROMITE_ASSET_NAME

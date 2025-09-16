@@ -29,26 +29,26 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute(defaultCommand string) {
 	var commandFound bool
-  	cmd := rootCmd.Commands()
+	cmd := rootCmd.Commands()
 
-  	for _, a := range cmd {
-    	for _, b := range os.Args[1:] {
-      		if a.Name() == b {
-       			commandFound = true
-        		break
-      		}
-    	}
-  	}
+	for _, a := range cmd {
+		for _, b := range os.Args[1:] {
+			if a.Name() == b {
+				commandFound = true
+				break
+			}
+		}
+	}
 
-  	if commandFound == false {
-    	args := append([]string{defaultCommand}, os.Args[1:]...)
-    	rootCmd.SetArgs(args)
-  	}
+	if commandFound == false {
+		args := append([]string{defaultCommand}, os.Args[1:]...)
+		rootCmd.SetArgs(args)
+	}
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf("%s: %s\n", color.RedString(constants.FATAL_NORMAL_CASE), err.Error())
-    	os.Exit(1)
-  	}
+		os.Exit(1)
+	}
 }
 
 func init() {
@@ -122,7 +122,7 @@ func initConfig() {
 	viper.SetDefault(constants.DOWNLOAD_DIRECTORY, filepath.Join(".", "download"))
 	viper.SetDefault(constants.PROFILE_DIRECTORY, filepath.Join(".", "profile"))
 	viper.SetDefault(constants.INSTALLED_VERSION, constants.EMPTY)
-	viper.SetDefault(constants.CHROME_DISTRIBUTION, constants.UNCHROME_CHROMIUM_DISTRIBUTION)
+	viper.SetDefault(constants.CHROME_DISTRIBUTION, constants.UNGOOGLED_CHROMIUM_DISTRIBUTION)
 	viper.SetDefault(constants.CHROME_COMMAND_LINE_OPTIONS, "--no-default-browser-check")
 
 	// Read the configuration file.
@@ -148,24 +148,24 @@ func initConfig() {
 
 	// Make sure the CHROME_DISTRIBUTION is set to one of our supported distributions.
 	distribution := viper.GetString(constants.CHROME_DISTRIBUTION)
-	if strings.EqualFold(distribution, constants.UNCHROME_CHROMIUM_DISTRIBUTION) == false &&
-		strings.EqualFold(distribution, constants.UNCHROME_WINCHROME_DISTRIBUTION) == false &&
+	if strings.EqualFold(distribution, constants.UNGOOGLED_CHROMIUM_DISTRIBUTION) == false &&
+		strings.EqualFold(distribution, constants.UNGOOGLED_WINCHROME_DISTRIBUTION) == false &&
 		strings.EqualFold(distribution, constants.CROMITE_DISTRIBUTION) == false {
-			log.Fatalf("%s: Unsupported distribution[%s] found. Valid distributions are '%s', '%s',and '%s'.\n",
-				color.RedString(constants.FATAL_NORMAL_CASE), distribution,
-				constants.UNCHROME_CHROMIUM_DISTRIBUTION, constants.UNCHROME_WINCHROME_DISTRIBUTION,
-				constants.CROMITE_DISTRIBUTION)
-			os.Exit(1)
-		}
+		log.Fatalf("%s: Unsupported distribution[%s] found. Valid distributions are '%s', '%s',and '%s'.\n",
+			color.RedString(constants.FATAL_NORMAL_CASE), distribution,
+			constants.UNGOOGLED_CHROMIUM_DISTRIBUTION, constants.UNGOOGLED_WINCHROME_DISTRIBUTION,
+			constants.CROMITE_DISTRIBUTION)
+		os.Exit(1)
+	}
 
 	// Use the global ExeDir to make sure the necessary directories exist. If
 	// they do not exist, they are created.
 	if viper.GetBool(constants.DEBUG) {
-    	log.Println("Executable directory:", globals.ExeDir)
+		log.Println("Executable directory:", globals.ExeDir)
 	}
 
 	// Make sure the DOWNLOAD_DIRECTORY exists.
-    downloadDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.DOWNLOAD_DIRECTORY))
+	downloadDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.DOWNLOAD_DIRECTORY))
 	_, err = os.Stat(downloadDirectory)
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(downloadDirectory, 0755)
@@ -177,7 +177,7 @@ func initConfig() {
 	}
 
 	// Make sure the PROFILE_DIRECTORY exists.
-    profileDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.PROFILE_DIRECTORY))
+	profileDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.PROFILE_DIRECTORY))
 	_, err = os.Stat(profileDirectory)
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(profileDirectory, 0755)
@@ -189,7 +189,7 @@ func initConfig() {
 	}
 
 	// Make sure the BIN_DIRECTORY exists.
-    binDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.BIN_DIRECTORY))
+	binDirectory := filepath.Join(globals.ExeDir, viper.GetString(constants.BIN_DIRECTORY))
 	_, err = os.Stat(binDirectory)
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(binDirectory, 0755)
